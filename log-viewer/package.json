@@ -6,6 +6,7 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",
+    "eslint-config-react-app": "^3.0.8",
     "express": "^4.16.4",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",

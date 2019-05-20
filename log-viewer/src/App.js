@@ -8,9 +8,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      logData: [
-        { name: 'Jane Smith', time: new Date(Date.now()), staff: 'Nathan', reason: 'needs insurance', notes: 'She is very grumpy' }
-      ]
+      logData: []
     };
 
     this.createNewLog = this.createNewLog.bind(this);

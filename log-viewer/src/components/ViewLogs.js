@@ -4,7 +4,6 @@ import Log from './Log';
 
 class ViewLogs extends Component {
 
-
   render() {
     let { logData } = this.props;
 

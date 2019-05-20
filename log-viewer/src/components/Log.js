@@ -5,10 +5,9 @@ class Log extends Component {
     super(props);
 
     this.state = {
-      editing: false,
+      editing: true,
       newName: '',
-      newTime: null,
-      newDate: null,
+      newTime: new Date(Date.now()),
       newStaff: '',
       newReason: '',
       newNotes: ''
@@ -44,40 +43,46 @@ class Log extends Component {
     });
   }
   
-  handleChange(e){
-    let key = e.target.getAttribute('data-key');
+  // handleChange - 
+  handleChange(e, key){
     let obj = {};
-    let val = null;
+    let val = '';
+    let prevTime = this.props.time
 
-    if (key === 'Time'){
-      //
-    } else if (key === 'Date'){
-      //
-    } else {
+    if (key === 'Time'){ // Time
+      let newTime = e.target.value.split(':')
+      val = new Date(prevTime)
+      val.setHours(newTime[0])
+      val.setMinutes(newTime[1])
+      val.setSeconds(0)
+    } else if (key === 'Date'){ // Date
+      val = new Date(e.target.value);
+      val.setDate(val.getDate() + 1) // date becomes offset for some reason; need to reset it
+      val.setHours(prevTime.getHours())
+      val.setMinutes(prevTime.getMinutes())
+    } else { // Name, Staff, Reason, Notes
       val = e.target.value;
     }
 
-    obj[`new${key}`] = val;
-
+    obj[`new${key === 'Date' ? 'Time' : key}`] = val;
     this.setState( obj );
   }
 
   formatTime(time){
     let addZero = n => n < 10 ? `0${n}` : `${n}`;
-
+    
     let hrs = time.getHours();
-    hrs = hrs >= 12 ? addZero(hrs) : addZero(hrs - 12);
+    let suffix = hrs <= 12 ? 'am' : 'pm';
+    hrs = hrs > 12 ? addZero(hrs - 12) : addZero(hrs)
 
     let mins = time.getMinutes();
     mins = addZero(mins);
-
-    let suffix = hrs <= 12 ? 'am' : 'pm';
 
     return `${time.getMonth()+1}/${time.getDate()}  ${hrs}:${mins} ${suffix}`;
   }
 
   render() {
-    let { editing, newName, newTime, newDate, newStaff, newReason, newNotes } = this.state;
+    let { editing, newName, newStaff, newReason, newNotes } = this.state;
     let { name, time, staff, reason, notes } = this.props;
 
     let fullTime = this.formatTime(time);
@@ -95,14 +100,14 @@ class Log extends Component {
       </tr>
       :
       <tr className="Log">
-        <td><input onChange={e => this.handleChange(e)} data-key="Name" type="text" value={newName} /></td>
+        <td><input onChange={e => this.handleChange(e, 'Name')} type="text" value={newName} /></td>
         <td>
-          <input onChange={e => this.handleChange(e)} data-key="Date" type="date" />
-          <input onChange={e => this.handleChange(e)} data-key="Time" type="time" />
+          <input onChange={e => this.handleChange(e, 'Date')} type="date" />
+          <input onChange={e => this.handleChange(e, 'Time')} type="time" />
         </td>
-        <td><input onChange={e => this.handleChange(e)} data-key="Staff" type="text" value={newStaff} /></td>
-        <td><input onChange={e => this.handleChange(e)} data-key="Reason" type="text" value={newReason} /></td>
-        <td><input onChange={e => this.handleChange(e)} data-key="Notes" type="text" value={newNotes} /></td>
+        <td><input onChange={e => this.handleChange(e, 'Staff')} type="text" value={newStaff} /></td>
+        <td><input onChange={e => this.handleChange(e, 'Reason')} type="text" value={newReason} /></td>
+        <td><input onChange={e => this.handleChange(e, 'Notes')} type="text" value={newNotes} /></td>
         <td onClick={() => this.saveEdits()} className="edit">save</td>
       </tr>
     );
